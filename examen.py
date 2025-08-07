@@ -227,9 +227,10 @@ def hacer_pregunta(p):
         if any(val in r.lower() for val in p["respuesta"]):
             st.success("¡Correcto!")
             return True
-        st.error("Incorrecto. Revisa el concepto.")
-        st.info(p["explicacion"])
-        return False
+        else:
+            st.error("Incorrecto. Revisa el concepto.")
+            st.info(p["explicacion"])
+            return False
 
 def examen_nivel(nombre_nivel):
     st.write(f"🧪 Nivel: {nombre_nivel.upper()} (Debes acertar al menos 4 de 5)")
@@ -260,7 +261,7 @@ def reforzar_conceptos():
         st.success("🎉 ¡Refuerzo exitoso! Puedes continuar.")
         return True
     else:
-        st.warning("❗ Necesitas más práctica. Te recomendamos estos recursos:")
+        st.error("❗ Necesitas más práctica. Te recomendamos estos recursos:")
         st.write(f"📹 Video: {subtemas[subtema_seleccionado]['recursos']['video']['titulo']}")
         st.write(f"[Ver Video]({subtemas[subtema_seleccionado]['recursos']['video']['url']})")
         st.write(f"📄 PDF: {subtemas[subtema_seleccionado]['recursos']['pdf']['titulo']}")
@@ -276,34 +277,37 @@ def main():
     st.write("📘 Comenzarás con el nivel BÁSICO. Debes acertar al menos 4 de 5 para pasar.")
 
     # ----- Nivel BÁSICO -----
-    if examen_nivel("básico") >= 4:
-        st.success("✅ ¡Pasas al nivel INTERMEDIO!")
-    else:
-        st.warning("🔁 No aprobaste el nivel BÁSICO. Vamos a reforzar.")
-        if not reforzar_conceptos():
-            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
-            return
-        st.write("➡️ Ahora al nivel INTERMEDIO:")
+    if st.button("Comenzar Nivel BÁSICO"):
+        if examen_nivel("básico") >= 4:
+            st.success("✅ ¡Pasas al nivel INTERMEDIO!")
+        else:
+            st.warning("🔁 No aprobaste el nivel BÁSICO. Vamos a reforzar.")
+            if not reforzar_conceptos():
+                st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+                return
+            st.success("➡️ Ahora al nivel INTERMEDIO:")
 
     # ----- Nivel INTERMEDIO -----
-    if examen_nivel("intermedio") >= 4:
-        st.success("✅ ¡Pasas al nivel AVANZADO!")
-    else:
-        st.warning("🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
-        if not reforzar_conceptos():
-            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
-            return
-        st.write("➡️ Ahora al nivel AVANZADO:")
+    if st.button("Comenzar Nivel INTERMEDIO"):
+        if examen_nivel("intermedio") >= 4:
+            st.success("✅ ¡Pasas al nivel AVANZADO!")
+        else:
+            st.warning("🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
+            if not reforzar_conceptos():
+                st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+                return
+            st.success("➡️ Ahora al nivel AVANZADO:")
 
     # ----- Nivel AVANZADO -----
-    if examen_nivel("avanzado") >= 4:
-        st.success("🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
-    else:
-        st.warning("🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
-        if reforzar_conceptos():
-            st.success("🎯 ¡Listo! Has completado el examen adaptativo.")
+    if st.button("Comenzar Nivel AVANZADO"):
+        if examen_nivel("avanzado") >= 4:
+            st.success("🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
         else:
-            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+            st.warning("🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
+            if reforzar_conceptos():
+                st.success("🎯 ¡Listo! Has completado el examen adaptativo.")
+            else:
+                st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
 
 if __name__ == "__main__":
     main()
