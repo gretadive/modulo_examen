@@ -274,10 +274,13 @@ def reforzar_conceptos():
 
 def main():
     st.title("🎓 EXAMEN ADAPTATIVO: Evaluación Formativa con IA")
-    st.write("📘 Comenzarás con el nivel BÁSICO. Debes acertar al menos 4 de 5 para pasar.")
+    
+    # Selección de tema
+    tema_seleccionado = st.selectbox("Selecciona un tema:", ["retroalimentación", "personalización del aprendizaje"])
 
-    # ----- Nivel BÁSICO -----
-    if st.button("Comenzar Nivel BÁSICO"):
+    # Botones para niveles
+    if st.button("Nivel BÁSICO"):
+        st.write("📘 Comenzarás con el nivel BÁSICO.")
         if examen_nivel("básico") >= 4:
             st.success("✅ ¡Pasas al nivel INTERMEDIO!")
         else:
@@ -285,29 +288,33 @@ def main():
             if not reforzar_conceptos():
                 st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
                 return
-            st.success("➡️ Ahora al nivel INTERMEDIO:")
 
-    # ----- Nivel INTERMEDIO -----
-    if st.button("Comenzar Nivel INTERMEDIO"):
-        if examen_nivel("intermedio") >= 4:
-            st.success("✅ ¡Pasas al nivel AVANZADO!")
+    if st.button("Nivel INTERMEDIO"):
+        st.write("📘 Intentando acceder al nivel INTERMEDIO.")
+        if examen_nivel("básico") < 4:
+            st.warning("❗ Debes aprobar el nivel BÁSICO para acceder al nivel INTERMEDIO.")
         else:
-            st.warning("🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
-            if not reforzar_conceptos():
-                st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
-                return
-            st.success("➡️ Ahora al nivel AVANZADO:")
-
-    # ----- Nivel AVANZADO -----
-    if st.button("Comenzar Nivel AVANZADO"):
-        if examen_nivel("avanzado") >= 4:
-            st.success("🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
-        else:
-            st.warning("🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
-            if reforzar_conceptos():
-                st.success("🎯 ¡Listo! Has completado el examen adaptativo.")
+            if examen_nivel("intermedio") >= 4:
+                st.success("✅ ¡Pasas al nivel AVANZADO!")
             else:
-                st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+                st.warning("🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
+                if not reforzar_conceptos():
+                    st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+                    return
+
+    if st.button("Nivel AVANZADO"):
+        st.write("📘 Intentando acceder al nivel AVANZADO.")
+        if examen_nivel("intermedio") < 4:
+            st.warning("❗ Debes aprobar el nivel INTERMEDIO para acceder al nivel AVANZADO.")
+        else:
+            if examen_nivel("avanzado") >= 4:
+                st.success("🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
+            else:
+                st.warning("🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
+                if reforzar_conceptos():
+                    st.success("🎯 ¡Listo! Has completado el examen adaptativo.")
+                else:
+                    st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
 
 if __name__ == "__main__":
     main()
