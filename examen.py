@@ -1,7 +1,5 @@
-#salió bien, falta que suceda igual para el intermedio y avanzado SU REFORZAMIENTO Y MATERIALES SI EN CASO NO APRUEBEN
-
 import random
-import webbrowser
+import streamlit as st
 
 # -------------------------------
 # PREGUNTAS POR NIVEL Y TIPO
@@ -204,54 +202,50 @@ subtemas = {
 # -------------------------------
 
 def hacer_pregunta(p):
-    print("\n", p["pregunta"])
     if p["tipo"] == "opcion":
-        for op in p["opciones"]:
-            print(op)
-        r = input("Tu respuesta: ").strip().upper()
+        r = st.radio(p["pregunta"], p["opciones"])
         if r == p["respuesta"]:
-            print(" ¡Correcto!")
+            st.success("¡Correcto!")
             return True
         else:
-            print(" Incorrecto. Revisa el concepto.")
-            print("", p["explicacion"])
+            st.error("Incorrecto. Revisa el concepto.")
+            st.info(p["explicacion"])
             return False
 
     elif p["tipo"] == "vf":
-        r = input("Responde V o F: ").strip().upper()
+        r = st.radio(p["pregunta"], ["V", "F"])
         if r == p["respuesta"]:
-            print(" ¡Correcto!")
+            st.success("¡Correcto!")
             return True
         else:
-            print(" Incorrecto. Revisa el concepto.")
-            print("", p["explicacion"])
+            st.error("Incorrecto. Revisa el concepto.")
+            st.info(p["explicacion"])
             return False
 
     elif p["tipo"] == "abierta":
-        r = input("Tu respuesta: ").strip().lower()
-        for val in p["respuesta"]:
-            if val in r:
-                print(" ¡Correcto!")
-                return True
-        print(" Incorrecto. Revisa el concepto.")
-        print("", p["explicacion"])
+        r = st.text_input(p["pregunta"])
+        if any(val in r.lower() for val in p["respuesta"]):
+            st.success("¡Correcto!")
+            return True
+        st.error("Incorrecto. Revisa el concepto.")
+        st.info(p["explicacion"])
         return False
 
 def examen_nivel(nombre_nivel):
-    print(f"\n🧪 Nivel: {nombre_nivel.upper()} (Debes acertar al menos 4 de 5)")
+    st.write(f"🧪 Nivel: {nombre_nivel.upper()} (Debes acertar al menos 4 de 5)")
     preguntas = random.sample(niveles[nombre_nivel], 5)
     puntaje = 0
     for p in preguntas:
         if hacer_pregunta(p):
             puntaje += 1
-    print(f"\n📊 Resultado: {puntaje}/5")
+    st.write(f"📊 Resultado: {puntaje}/5")
     return puntaje
 
 def reforzar_conceptos():
-    print("\n🔁 Vamos a reforzar juntos este tema.")
+    st.write("🔁 Vamos a reforzar juntos este tema.")
     subtema_seleccionado = random.choice(list(subtemas.keys()))
-    print(f"\n📚 Tema de refuerzo: {subtema_seleccionado.upper()}")
-    print("\n", subtemas[subtema_seleccionado]["texto"])
+    st.write(f"📚 Tema de refuerzo: {subtema_seleccionado.upper()}")
+    st.write(subtemas[subtema_seleccionado]["texto"])
 
     preguntas_refuerzo = random.sample(subtemas[subtema_seleccionado]["preguntas"], 4)
     puntaje_refuerzo = 0
@@ -260,17 +254,17 @@ def reforzar_conceptos():
         if hacer_pregunta(p):
             puntaje_refuerzo += 1
 
-    print(f"\n📊 Puntaje de refuerzo: {puntaje_refuerzo}/4")
+    st.write(f"📊 Puntaje de refuerzo: {puntaje_refuerzo}/4")
 
     if puntaje_refuerzo >= 3:
-        print("\n🎉 ¡Refuerzo exitoso! Puedes continuar.")
+        st.success("🎉 ¡Refuerzo exitoso! Puedes continuar.")
         return True
     else:
-        print("\n❗ Necesitas más práctica. Te recomendamos estos recursos:")
-        print(f"📹 Video: {subtemas[subtema_seleccionado]['recursos']['video']['titulo']}")
-        print(f"   {subtemas[subtema_seleccionado]['recursos']['video']['url']}")
-        print(f"📄 PDF: {subtemas[subtema_seleccionado]['recursos']['pdf']['titulo']}")
-        print(f"   {subtemas[subtema_seleccionado]['recursos']['pdf']['url']}")
+        st.warning("❗ Necesitas más práctica. Te recomendamos estos recursos:")
+        st.write(f"📹 Video: {subtemas[subtema_seleccionado]['recursos']['video']['titulo']}")
+        st.write(f"[Ver Video]({subtemas[subtema_seleccionado]['recursos']['video']['url']})")
+        st.write(f"📄 PDF: {subtemas[subtema_seleccionado]['recursos']['pdf']['titulo']}")
+        st.write(f"[Ver PDF]({subtemas[subtema_seleccionado]['recursos']['pdf']['url']})")
         return False
 
 # -------------------------------
@@ -278,38 +272,38 @@ def reforzar_conceptos():
 # -------------------------------
 
 def main():
-    print("🎓 EXAMEN ADAPTATIVO: Evaluación Formativa con IA")
-    print("\n📘 Comenzarás con el nivel BÁSICO. Debes acertar al menos 4 de 5 para pasar.")
+    st.title("🎓 EXAMEN ADAPTATIVO: Evaluación Formativa con IA")
+    st.write("📘 Comenzarás con el nivel BÁSICO. Debes acertar al menos 4 de 5 para pasar.")
 
     # ----- Nivel BÁSICO -----
     if examen_nivel("básico") >= 4:
-        print("\n✅ ¡Pasas al nivel INTERMEDIO!")
+        st.success("✅ ¡Pasas al nivel INTERMEDIO!")
     else:
-        print("\n🔁 No aprobaste el nivel BÁSICO. Vamos a reforzar.")
+        st.warning("🔁 No aprobaste el nivel BÁSICO. Vamos a reforzar.")
         if not reforzar_conceptos():
-            print("\n📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
             return
-        print("\n➡️ Ahora al nivel INTERMEDIO:")
+        st.write("➡️ Ahora al nivel INTERMEDIO:")
 
     # ----- Nivel INTERMEDIO -----
     if examen_nivel("intermedio") >= 4:
-        print("\n✅ ¡Pasas al nivel AVANZADO!")
+        st.success("✅ ¡Pasas al nivel AVANZADO!")
     else:
-        print("\n🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
+        st.warning("🔁 No aprobaste el nivel INTERMEDIO. Vamos a reforzar.")
         if not reforzar_conceptos():
-            print("\n📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
             return
-        print("\n➡️ Ahora al nivel AVANZADO:")
+        st.write("➡️ Ahora al nivel AVANZADO:")
 
     # ----- Nivel AVANZADO -----
     if examen_nivel("avanzado") >= 4:
-        print("\n🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
+        st.success("🏁 ¡Felicidades! Has completado exitosamente todos los niveles.")
     else:
-        print("\n🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
+        st.warning("🔁 No aprobaste el nivel AVANZADO. Vamos a reforzar.")
         if reforzar_conceptos():
-            print("\n🎯 ¡Listo! Has completado el examen adaptativo.")
+            st.success("🎯 ¡Listo! Has completado el examen adaptativo.")
         else:
-            print("\n📌 Revisa los recursos y vuelve a intentarlo más tarde.")
+            st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
 
 if __name__ == "__main__":
     main()
