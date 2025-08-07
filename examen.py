@@ -274,7 +274,18 @@ def reforzar_conceptos():
 
 def main():
     st.title("🎓 EXAMEN ADAPTATIVO: Evaluación Formativa con IA")
+
+    st.header("📘 Bienvenida")
+    st.write("""
+    Este examen tiene tres niveles: **BÁSICO**, **INTERMEDIO** y **AVANZADO**.
     
+    - Comenzarás por el nivel BÁSICO.
+    - Debes responder al menos 4 de 5 preguntas correctamente para avanzar.
+    - Si no apruebas, recibirás un refuerzo con preguntas y recursos de aprendizaje.
+    
+    👉 Selecciona un tema y luego presiona uno de los botones para comenzar.
+    """)
+
     # Selección de tema
     tema_seleccionado = st.selectbox("Selecciona un tema:", ["retroalimentación", "personalización del aprendizaje"])
 
@@ -316,5 +327,5 @@ def main():
                 else:
                     st.info("📌 Revisa los recursos y vuelve a intentarlo más tarde.")
 
-if __name__ == "__main__":
-    main()
+# Ejecutar siempre el flujo principal
+main()
